@@ -21,56 +21,45 @@ import Producto from "./producto.js";
         let inpNombre=document.getElementById("txtNombre");
         let inpCantidad=document.getElementById("txtCantidad");
         let inpCosto=document.getElementById("txtCosto");
-        let codigo=Number(inpCodigo.value);
+        let codigo=inpCodigo.value;
         let nombre=inpNombre.value;
-        let cantidad=Number(inpCantidad.value);
-        let costo=Number(inpCosto.value);
+        let cantidad=inpCantidad.value
+        let costo=inpCosto.value
         if(codigo&&nombre&&cantidad&&costo){
             inpCodigo.value="";
             inpNombre.value="";
             inpCantidad.value="";
             inpCosto.value=""; 
+            codigo=Number(codigo)
+            cantidad=Number(cantidad)
+            costo=Number(costo)
             return new Producto(codigo, nombre, cantidad, costo);
         }
         return null;
     }
     _addProduct=()=>{
       let producto= this.readForm();
-      if(producto==null){
-        document.getElementById("resultado").innerHTML="Error todos los campos son requeridos";
-        return;
-      }
+      let resultado=document.getElementById("resultado");
+      if(producto!=null){
       let added=this._inventory.agregar(producto);
-      if(added==null){
-        if(this._inventory.getLength()>=20){
-          document.getElementById("resultado").innerHTML="Error maximo 20 productos";
-          return
-        }
-        document.getElementById("resultado").innerHTML="Error producto ya registrado";
-        return;
-      }
-      document.getElementById("resultado").innerHTML=`Agregaste el producto ${producto.infoHtml()}`;
+      resultado.innerHTML=added;
+      return
+    }
+
+        resultado.innerHTML="Error todos los campos deben ser llenados"
       console.log(this._inventory)
+      return
     }
     _searchProduct=()=>{
       let codigo=document.getElementById('txtCodigo').value;
-    let buscado=this._inventory.buscar(codigo);
+    let resultado=this._inventory.buscar(codigo);
     let detalles=document.getElementById('resultado');
-    if (buscado==null)
-      detalles.innerHTML = "<h3>No se encontro la codigo buscada</h3>";
-    else
-      detalles.innerHTML = "<h3>encontramos</h3>" + buscado.infoHtml()
+   detalles.innerHTML=resultado;
     }
     _deleteProduct=()=>{
       let codigo=document.getElementById('txtCodigo').value;
-      let buscado=this._inventory.buscar(codigo);
       let detalles=document.getElementById('resultado');
-    if (buscado==null)
-      detalles.innerHTML = "<h3>El codigo que deseas eliminar no se encuentra</h3>";
-    else{
-      detalles.innerHTML = "<h3>Eliminaste el producto</h3>" + buscado.infoHtml()
-     this._inventory.borrar(codigo);
-    }
+   detalles.innerHTML=this._inventory.borrar(codigo);
     
      
     }
@@ -83,30 +72,7 @@ import Producto from "./producto.js";
       detalles.innerHTML=this._inventory.inverseList();
       }
     
-    _insertProduct=()=>{
-      let pos=document.getElementById('txtPos').value;
-      let producto= this.readForm();
-      if(producto==null||pos==""){
-        document.getElementById("resultado").innerHTML="Error todos los campos son requeridos";
-        return;
-      }
-      pos=Number(pos)
-      if(pos>this._inventory.getLength()-1){
-        document.getElementById("resultado").innerHTML=`Error posicion fuera de el limite <i>Limite : ${this._inventory.getLength()-1}</i>`;
-        return;
-      }
-      let added=this._inventory.insertar(pos,producto);
-      if(added==null){
-        if(this._inventory.getLength()>=20){
-          document.getElementById("resultado").innerHTML="Error maximo 20 productos";
-          return
-        }
-        document.getElementById("resultado").innerHTML="Error producto ya registrado";
-        return;
-      }
-      document.getElementById("resultado").innerHTML=`Agregaste el producto ${producto.infoHtml()} en la posicion ${pos}`;
-      console.log(this._inventory)
-    }
+    
   }
  new App();
 
